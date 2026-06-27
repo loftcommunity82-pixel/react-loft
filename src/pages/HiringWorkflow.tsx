@@ -27,6 +27,8 @@ import {
 } from 'lucide-react'
 import { useCompanyJobs, useJobMetrics } from '@/lib/api-hooks'
 import { toggleShortlist } from '@/lib/api'
+import { USE_JSON_DATA } from '@/lib/config'
+import { toggleShortlistInJson } from '@/lib/json-service'
 
 const log = createLogger('hiring-workflow')
 
@@ -110,7 +112,11 @@ export default function HiringWorkflowPage() {
     const newValue = !shortlisted[appId]
     setShortlisted(prev => ({ ...prev, [appId]: newValue }))
     try {
-      await toggleShortlist(appId, newValue)
+      if (USE_JSON_DATA) {
+        await toggleShortlistInJson(appId, newValue)
+      } else {
+        await toggleShortlist(appId, newValue)
+      }
     } catch (err) {
       setShortlisted(prev => ({ ...prev, [appId]: !newValue }))
       log.error('Failed to toggle shortlist', err)

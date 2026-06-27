@@ -1,5 +1,5 @@
 import rawData from '@/data/jobs.json'
-import type { Job, Application, SavedJob } from './types'
+import type { Job, Application, SavedJob, Candidate, JobMetrics } from './types'
 import { normalizeJob } from './mappers'
 
 const BASE_DELAY = 400
@@ -165,17 +165,64 @@ export async function submitApplicationToJson(slug: string, body: { coverLetter?
   return { success: true, application: newApp }
 }
 
-export async function getSavedJobsFromJson(_email?: string): Promise<SavedJob[]> {
-  return []
+const savedJobsStore: Record<string, number[]> = {}
+
+export async function saveJobInJson(email: string, jobId: number): Promise<void> {
+  await randomDelay()
+  if (!savedJobsStore[email]) savedJobsStore[email] = []
+  if (!savedJobsStore[email].includes(jobId)) {
+    savedJobsStore[email].push(jobId)
+  }
+  clearCache()
+}
+
+export async function unsaveJobInJson(email: string, jobId: number): Promise<void> {
+  await randomDelay()
+  if (savedJobsStore[email]) {
+    savedJobsStore[email] = savedJobsStore[email].filter(id => id !== jobId)
+  }
+  clearCache()
+}
+
+export async function getSavedJobsFromJson(email?: string): Promise<SavedJob[]> {
+  await randomDelay()
+  if (!email || !savedJobsStore[email]) return []
+
+  const jobIds = savedJobsStore[email]
+  const jobs = (rawData.jobs || []).filter(j => jobIds.includes(j.id))
+
+  return jobs.map(j => {
+    const emp = (rawData.employers || []).find(e => e.userId === j.employerId)
+    return {
+      id: String(j.id),
+      jobId: j.id,
+      userId: email,
+      savedAt: new Date().toISOString(),
+      job: {
+        id: j.id,
+        title: j.title,
+        slug: j.slug,
+        location: j.location ?? null,
+        city: j.city ?? null,
+        remoteWork: j.remoteWork ?? null,
+        jobType: j.jobType,
+        company: emp ? { companyName: emp.companyName, companyLogo: emp.companyLogo } : null,
+      },
+    }
+  })
 }
 
 export async function getCompanyJobsFromJson(email?: string): Promise<any[]> {
   await randomDelay()
   const emp = (rawData.employers || []).find(e => e.contactEmail === email)
   if (!emp) return []
+  const apps = rawData.applications || []
   return (rawData.jobs || [])
     .filter(j => j.employerId === emp.userId)
-    .map(normalizeJob)
+    .map(j => {
+      const count = apps.filter(a => a.jobId === j.id).length
+      return { ...normalizeJob(j), applicationsCount: count }
+    })
 }
 
 export async function getCompanyProfileFromJson(email?: string): Promise<any> {
@@ -244,4 +291,131 @@ export async function getDashboardDataFromJson(email?: string): Promise<any> {
 
 export function getRawJsonData() {
   return rawData
+}
+
+export async function getCandidatesFromJson(slug: string): Promise<{ job: any; candidates: Candidate[]; total: number }> {
+  await randomDelay()
+  const job = (rawData.jobs || []).find(j => j.slug === slug)
+  if (!job) return { job: null, candidates: [], total: 0 }
+
+  const apps = (rawData.applications || []).filter(a => a.jobId === job.id)
+  const emp = (rawData.employers || []).find(e => e.userId === job.employerId)
+
+  const jobSkills: string[] = job.requiredSkills || job.skills || []
+
+  const candidates: Candidate[] = apps.map(a => {
+    const matchedSkills = jobSkills.length > 0
+      ? Math.floor(Math.random() * jobSkills.length) + 1
+      : 0
+    const totalRequired = Math.max(jobSkills.length, 1)
+    const matchScore = Math.min(Math.round((matchedSkills / totalRequired) * 100), 100)
+
+    return {
+      id: a.id,
+      status: a.status || 'PENDING',
+      appliedAt: a.appliedAt,
+      matchScore,
+      matchedSkills,
+      totalRequired,
+      candidate: {
+        id: a.id,
+        name: 'John Doe',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: a.userId || 'applicant@example.com',
+        profileImage: '',
+        profile: {
+          jobTitle: job.title || '',
+          summary: a.coverLetter?.slice(0, 200) || '',
+          skills: jobSkills,
+          experienceYears: 2,
+          skillsRelation: jobSkills.slice(0, 5).map(s => ({ skill: { name: s }, level: 'intermediate' })),
+        },
+      },
+    }
+  })
+
+  return {
+    job: { ...job, company: emp || null },
+    candidates,
+    total: candidates.length,
+  }
+}
+
+export async function getJobMetricsFromJson(slug: string): Promise<JobMetrics> {
+  await randomDelay()
+  const job = (rawData.jobs || []).find(j => j.slug === slug)
+  const jobId = job?.id || 0
+
+  const apps = (rawData.applications || []).filter(a => a.jobId === jobId)
+  const total = apps.length
+  const pending = apps.filter(a => a.status === 'PENDING').length
+  const reviewing = apps.filter(a => a.status === 'REVIEWING').length
+  const shortlisted = apps.filter(a => a.status === 'SHORTLISTED').length
+  const interviewing = apps.filter(a => a.status === 'INTERVIEW').length
+  const offered = apps.filter(a => a.status === 'OFFERED').length
+  const hired = apps.filter(a => a.status === 'HIRED').length
+  const rejected = apps.filter(a => a.status === 'REJECTED').length
+
+  return {
+    jobId,
+    totalApplications: total,
+    pendingApplications: pending,
+    reviewingApplications: reviewing + shortlisted,
+    shortlistedApplications: shortlisted,
+    interviewingApplications: interviewing,
+    offeredApplications: offered,
+    hiredApplications: hired,
+    rejectedApplications: rejected,
+    conversionRate: total > 0 ? Math.round((hired / total) * 100) : 0,
+    avgMatchScore: total > 0 ? 75 : 0,
+    totalCandidates: total,
+  }
+}
+
+export async function getApplicationsForJobFromJson(jobId: number): Promise<any[]> {
+  await randomDelay()
+  const apps = (rawData.applications || []).filter(a => a.jobId === jobId)
+  const job = (rawData.jobs || []).find(j => j.id === jobId)
+  const emp = job ? (rawData.employers || []).find(e => e.userId === job.employerId) : null
+
+  return apps.map(a => ({
+    ...a,
+    job: job ? { ...job, company: emp ? { companyName: emp.companyName, companyLogo: emp.companyLogo } : null } : null,
+    candidate: {
+      id: a.userId || '0',
+      firstName: 'John',
+      lastName: 'Doe',
+      email: a.userId || 'applicant@example.com',
+      profileImage: '',
+    },
+  }))
+}
+
+export async function updateApplicationStatusInJson(appId: number, status: string, notes?: string): Promise<any> {
+  await randomDelay()
+  const app = (rawData.applications || []).find(a => a.id === appId)
+  if (!app) throw new Error(`Application ${appId} not found`)
+
+  const a = app as any
+  a.status = status
+  if (notes) a.employerNotes = notes
+  if (status === 'REVIEWING' && !a.reviewedAt) a.reviewedAt = new Date().toISOString()
+  if (status === 'INTERVIEW' && !a.interviewAt) a.interviewAt = new Date().toISOString()
+  if (status === 'REJECTED' && !a.rejectedAt) a.rejectedAt = new Date().toISOString()
+  if (status === 'HIRED' && !a.acceptedAt) a.acceptedAt = new Date().toISOString()
+  if (status === 'OFFERED' && !a.acceptedAt) a.acceptedAt = new Date().toISOString()
+
+  clearCache()
+  return { ...app }
+}
+
+export async function toggleShortlistInJson(appId: number, shortlisted: boolean): Promise<{ success: boolean; isShortlisted: boolean }> {
+  await randomDelay()
+  const app = (rawData.applications || []).find(a => a.id === appId)
+  if (app) {
+    app.isShortlisted = shortlisted
+    clearCache()
+  }
+  return { success: true, isShortlisted: shortlisted }
 }

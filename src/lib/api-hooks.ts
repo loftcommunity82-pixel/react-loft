@@ -29,6 +29,10 @@ import {
   getDashboardDataFromJson,
   searchSkillsFromJson,
   submitApplicationToJson,
+  getCandidatesFromJson,
+  getJobMetricsFromJson,
+  saveJobInJson,
+  unsaveJobInJson,
 } from './json-service'
 import type { Job, Application, Message, Conversation, SavedJob, CompanyProfile, Notification, NotificationPrefs, JobMetrics, Candidate, Skill } from './types'
 import { normalizeJob } from './mappers'
@@ -357,15 +361,27 @@ export function useSavedJobs(email?: string) {
   }, [e])
 
   const toggleSave = async (jobId: number) => {
+    if (!e) return
     const existing = savedJobs.find(sj => sj.jobId === jobId)
     try {
-      if (existing) {
-        await unsaveJob(jobId, e ?? undefined)
-        setSavedJobs(prev => prev.filter(sj => sj.jobId !== jobId))
+      if (USE_JSON_DATA) {
+        if (existing) {
+          await unsaveJobInJson(e, jobId)
+          setSavedJobs(prev => prev.filter(sj => sj.jobId !== jobId))
+        } else {
+          await saveJobInJson(e, jobId)
+          const newSaved = await getSavedJobsFromJson(e)
+          setSavedJobs(newSaved)
+        }
       } else {
-        await saveJob(jobId, e ?? undefined)
-        const newSaved = await fetchSavedJobs(e ?? undefined)
-        setSavedJobs(newSaved)
+        if (existing) {
+          await unsaveJob(jobId, e ?? undefined)
+          setSavedJobs(prev => prev.filter(sj => sj.jobId !== jobId))
+        } else {
+          await saveJob(jobId, e ?? undefined)
+          const newSaved = await fetchSavedJobs(e ?? undefined)
+          setSavedJobs(newSaved)
+        }
       }
     } catch { /* silent */ }
   }
@@ -492,9 +508,15 @@ export function useCandidates(slug: string | undefined) {
     if (!slug) { setLoading(false); return }
     setLoading(true)
     try {
-      const data = await getJobCandidates(slug)
-      setCandidates(data.candidates || [])
-      setJobTitle(data.job?.title || '')
+      if (USE_JSON_DATA) {
+        const data = await getCandidatesFromJson(slug)
+        setCandidates(data.candidates || [])
+        setJobTitle(data.job?.title || '')
+      } else {
+        const data = await getJobCandidates(slug)
+        setCandidates(data.candidates || [])
+        setJobTitle(data.job?.title || '')
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -516,8 +538,8 @@ export function useJobMetrics(slug: string | undefined) {
 
   useEffect(() => {
     if (!slug) { setLoading(false); return }
-    setLoading(true)
-    getJobMetrics(slug)
+    setLoading(true);
+    (USE_JSON_DATA ? getJobMetricsFromJson(slug) : getJobMetrics(slug))
       .then(setMetrics)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
