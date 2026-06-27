@@ -97,7 +97,7 @@ export default function JobDetail() {
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <SaveJobButton jobId={job.id} />
-                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => setShowApply(true)} disabled={!isAuthenticated}>
+                  <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => { if (!isAuthenticated) navigate('/login'); else setShowApply(true) }}>
                     <Send className="h-4 w-4 mr-2" /> Apply Now
                   </Button>
                 </div>
