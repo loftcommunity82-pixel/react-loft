@@ -18,12 +18,8 @@ import type {
   InterviewStatus,
 } from './types'
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL
-  ? `${import.meta.env.VITE_BACKEND_URL}/api`
-  : '/api'
-
 const api = axios.create({
-  baseURL: API_BASE,
+  baseURL: '/api',
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 })
