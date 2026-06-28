@@ -227,7 +227,7 @@ export default function HiringWorkflowPage() {
               <>
                 {activeTab === 'pipeline' && (
                   <div className="space-y-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                       {[
                         { status: 'PENDING' as ApplicationStatus, stage: 'APPLICATIONS_RECEIVED' as HiringStage, label: 'Applications', icon: <FileText className="w-4 h-4" /> },
                         { status: 'REVIEWING' as ApplicationStatus, stage: 'RESUME_SCREENING' as HiringStage, label: 'Screening', icon: <Clock className="w-4 h-4" /> },

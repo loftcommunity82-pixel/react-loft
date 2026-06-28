@@ -47,7 +47,7 @@
       "closedAt": null,
       "company": {
         "companyName": "CrowdStrike",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/crowdstrike.png",
         "city": "Remote"
       },
       "source": "flashfirejobs.com"
@@ -99,7 +99,7 @@
       "closedAt": null,
       "company": {
         "companyName": "GitLab",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/gitlab.png",
         "city": "Remote"
       },
       "source": "remotegoldcareers.com"
@@ -151,7 +151,7 @@
       "closedAt": null,
       "company": {
         "companyName": "UnitedHealth Group",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/unitedhealth-group.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -203,7 +203,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Intuit",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/intuit.png",
         "city": "Remote"
       },
       "source": "flashfirejobs.com"
@@ -255,7 +255,7 @@
       "closedAt": null,
       "company": {
         "companyName": "UnitedHealth Group",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/unitedhealth-group.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -307,7 +307,7 @@
       "closedAt": null,
       "company": {
         "companyName": "HubSpot",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/hubspot.png",
         "city": "Remote"
       },
       "source": "flashfirejobs.com"
@@ -359,7 +359,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Zoom",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/zoom.png",
         "city": "Remote"
       },
       "source": "remotegoldcareers.com"
@@ -411,7 +411,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Wiz",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/wiz.png",
         "city": "Remote"
       },
       "source": "remotegoldcareers.com"
@@ -463,7 +463,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Centene Corporation",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/centene-corporation.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -515,7 +515,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Lumenalta (Clevertech)",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/lumenalta-clevertech.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -567,7 +567,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Robert Half Client",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/robert-half-client.png",
         "city": "Remote"
       },
       "source": "roberthalf.com"
@@ -619,7 +619,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Robert Half Client",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/robert-half-client.png",
         "city": "Remote"
       },
       "source": "roberthalf.com"
@@ -671,7 +671,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Salesforce",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/salesforce.png",
         "city": "Remote"
       },
       "source": "flashfirejobs.com"
@@ -723,7 +723,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Concentrix",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/concentrix.png",
         "city": "Remote"
       },
       "source": "peer2career.kit.com"
@@ -775,7 +775,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Arthur J. Gallagher & Co.",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/arthur-j-gallagher-co.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -827,7 +827,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Lumenalta",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/lumenalta.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -879,7 +879,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Cigna",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/cigna.png",
         "city": "Remote"
       },
       "source": "peer2career.kit.com"
@@ -931,7 +931,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Driven Insights LLC",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/driven-insights-llc.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -983,7 +983,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Wiz",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/wiz.png",
         "city": "Remote"
       },
       "source": "remotegoldcareers.com"
@@ -1035,7 +1035,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Centene Corporation",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/centene-corporation.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -1087,7 +1087,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Robert Half Client",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/robert-half-client.png",
         "city": "Remote"
       },
       "source": "roberthalf.com"
@@ -1139,7 +1139,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Various (Fortune 500)",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/various-fortune-500.svg",
         "city": "Remote"
       },
       "source": "flashfirejobs.com"
@@ -1191,7 +1191,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Jerry Insurance Agency",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/jerry-insurance-agency.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -1243,7 +1243,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Supabase",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/supabase.png",
         "city": "Remote"
       },
       "source": "remotegoldcareers.com"
@@ -1295,7 +1295,7 @@
       "closedAt": null,
       "company": {
         "companyName": "Lumenalta",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/lumenalta.png",
         "city": "Remote"
       },
       "source": "virtualvocations.com"
@@ -1362,7 +1362,7 @@
       "closedAt": null,
       "company": {
         "companyName": "BrandVoice Communications",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/brandvoice-communications.svg",
         "city": "Hybrid (NYC/Remote)"
       },
       "source": "local"
@@ -1429,7 +1429,7 @@
       "closedAt": null,
       "company": {
         "companyName": "NextGen Digital",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/nextgen-digital.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -1496,7 +1496,7 @@
       "closedAt": null,
       "company": {
         "companyName": "BioInnovate Labs",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/bioinnovate-labs.svg",
         "city": "On-site (Boston, MA)"
       },
       "source": "local"
@@ -1559,7 +1559,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "TechCorp Solutions",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/techcorp-solutions.png",
         "city": "Remote"
       },
       "source": "local"
@@ -1620,7 +1620,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Growth Dynamics",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/growth-dynamics.svg",
         "city": "Hybrid"
       },
       "source": "local"
@@ -1681,7 +1681,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Growth Dynamics",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/growth-dynamics.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -1742,7 +1742,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Care Connect",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/care-connect.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -1803,7 +1803,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Insight Analytics",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/insight-analytics.svg",
         "city": "On-site"
       },
       "source": "local"
@@ -1864,7 +1864,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Creative Studios",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/creative-studios.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -1925,7 +1925,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Revenue Builders",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/revenue-builders.svg",
         "city": "Hybrid"
       },
       "source": "local"
@@ -1986,7 +1986,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Revenue Builders",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/revenue-builders.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2047,7 +2047,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Service Excellence",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/service-excellence.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2108,7 +2108,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Client First",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/client-first.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2169,7 +2169,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Response Team",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/response-team.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2230,7 +2230,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Support Hub",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/support-hub.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2291,7 +2291,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Expert Support",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/expert-support.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2352,7 +2352,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Service Leaders",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/service-leaders.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2413,7 +2413,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Service Leaders",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/service-leaders.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2476,7 +2476,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Cloud Solutions",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/cloud-solutions.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2537,7 +2537,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Service Leaders",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/service-leaders.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2598,7 +2598,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "CloudTech Solutions",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/cloudtech-solutions.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2659,7 +2659,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "WebFlow Studios",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/webflow-studios.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2720,7 +2720,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "ServerTech Inc.",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/servertech-inc.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2781,7 +2781,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Creative Agency",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/creative-agency.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2842,7 +2842,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Content Hub",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/content-hub.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2903,7 +2903,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "Brand Boost",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/brand-boost.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -2964,7 +2964,7 @@
       "closedAt": "2026-05-24T13:59:34.984",
       "company": {
         "companyName": "AppWorks",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/appworks.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -3025,7 +3025,7 @@
       "closedAt": "2026-06-25T21:44:59.69",
       "company": {
         "companyName": "WebFlow Studios",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/webflow-studios.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -3086,7 +3086,7 @@
       "closedAt": "2026-06-25T21:44:59.69",
       "company": {
         "companyName": "Growth Solutions",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/growth-solutions.svg",
         "city": "Remote"
       },
       "source": "local"
@@ -3147,7 +3147,7 @@
       "closedAt": "2026-06-25T21:44:59.69",
       "company": {
         "companyName": "WebFlow Studios",
-        "companyLogo": null,
+        "companyLogo": "/images/logos/webflow-studios.svg",
         "city": "Remote"
       },
       "source": "local"

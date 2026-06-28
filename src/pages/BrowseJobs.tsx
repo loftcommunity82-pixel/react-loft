@@ -55,7 +55,7 @@ export default function BrowseJobs() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="h-10 rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white min-w-[140px]"
+              className="h-10 min-h-[44px] rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white min-w-[140px]"
               aria-label="Filter by job type"
             >
               <option value="">All Types</option>
