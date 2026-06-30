@@ -93,6 +93,7 @@ export interface Message {
   isOwn: boolean
   sender: {
     id: number
+    clerkId: string
     name: string | null
     firstName: string | null
     lastName: string | null
@@ -100,6 +101,7 @@ export interface Message {
   }
   receiver: {
     id: number
+    clerkId: string
     name: string | null
     firstName: string | null
     lastName: string | null

@@ -94,14 +94,39 @@ export default function MessagesPage() {
   async function handleSend() {
     if (!text.trim() || !activeConv || !user) return
     setSending(true)
+
+    const content = text.trim()
+    const tempId = -Date.now()
+
+    setActiveConv(prev => prev ? {
+      ...prev,
+      messages: [...prev.messages, {
+        id: tempId,
+        content,
+        jobId: null,
+        readAt: null,
+        createdAt: new Date().toISOString(),
+        isOwn: true,
+        sender: { id: user.id, clerkId: user.clerkId, firstName: user.firstName, lastName: user.lastName, name: user.name, profileImage: user.profileImage },
+        receiver: { id: 0, clerkId: activeConv.participantId, firstName: null, lastName: null, name: activeConv.participantName, profileImage: null },
+      }],
+      lastMessage: content,
+      lastMessageAt: new Date().toISOString(),
+    } : prev)
+
+    setText('')
+
     try {
       await api.post('/messages', {
         email: user.email,
         receiverId: activeConv.participantId,
-        content: text.trim(),
+        content,
       })
-      setText('')
     } catch (err: any) {
+      setActiveConv(prev => prev ? {
+        ...prev,
+        messages: prev.messages.filter(m => m.id !== tempId),
+      } : prev)
       toast.error(err.response?.data?.message || 'Failed to send')
     } finally {
       setSending(false)

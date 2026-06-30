@@ -3,30 +3,13 @@ import { loginAs } from "./auth"
 import { TEST_EMAILS, BASE } from "./constants"
 
 test.describe("Profile image upload", () => {
-  test("applicant can upload a profile image via Uploadcare", async ({ page }) => {
-    await page.route("**upload.uploadcare.com**", async (route) => {
-      const url = route.request().url()
-      if (url.includes("/base/")) {
+  test("applicant can upload a profile image", async ({ page }) => {
+    await page.route("**/users/profile", async (route, request) => {
+      if (request.method() === "PATCH") {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ file: "mock-uuid-12345" }),
-        })
-        return
-      }
-      if (url.includes("/info/")) {
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({
-            file_id: "mock-uuid-12345",
-            original_filename: "test-avatar.png",
-            size: 123,
-            is_stored: true,
-            is_ready: true,
-            mime_type: "image/png",
-            image_info: { width: 1, height: 1 },
-          }),
+          body: JSON.stringify({ success: true }),
         })
         return
       }
@@ -49,6 +32,6 @@ test.describe("Profile image upload", () => {
     })
 
     await expect(page.getByText("Photo updated")).toBeVisible({ timeout: 15000 })
-    await expect(page.locator("img[src*='ucarecdn.com']")).toBeVisible()
+    await expect(page.locator("img[src*='data:image']")).toBeVisible()
   })
 })

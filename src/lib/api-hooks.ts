@@ -282,7 +282,7 @@ export function useConversations(email?: string) {
       for (const msg of msgs) {
         const isOther = !msg.isOwn
         const other = isOther ? msg.sender : msg.receiver
-        const key = String(other.id)
+        const key = other.clerkId || String(other.id)
         if (!grouped[key]) {
           grouped[key] = {
             id: key,
