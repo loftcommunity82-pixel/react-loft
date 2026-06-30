@@ -16,23 +16,14 @@ import api, {
   updateNotificationPrefs,
   submitContactForm,
   searchSkills,
+  getAdminApplications,
+  getAdminApplication,
 } from './api'
 import { USE_JSON_DATA } from './config'
 import {
   getJobsFromJson,
   getJobFromJson,
-  getApplicationsFromJson,
-  getApplicationFromJson,
-  getSavedJobsFromJson,
-  getCompanyJobsFromJson,
-  getCompanyProfileFromJson,
-  getDashboardDataFromJson,
   searchSkillsFromJson,
-  submitApplicationToJson,
-  getCandidatesFromJson,
-  getJobMetricsFromJson,
-  saveJobInJson,
-  unsaveJobInJson,
 } from './json-service'
 import type { Job, Application, Message, Conversation, SavedJob, CompanyProfile, Notification, NotificationPrefs, JobMetrics, Candidate, Skill } from './types'
 import { normalizeJob } from './mappers'
@@ -120,20 +111,13 @@ export function useApplications(email?: string) {
   useEffect(() => {
     if (!e) { setLoading(false); return }
     setLoading(true)
-    if (USE_JSON_DATA) {
-      getApplicationsFromJson(e)
-        .then(setApplications)
-        .catch((err) => setError(err.message))
-        .finally(() => setLoading(false))
-    } else {
-      api.get('/applications', { params: { email: e } })
-        .then((res) => {
-          const data = res.data
-          setApplications(Array.isArray(data) ? data : data.applications || [])
-        })
-        .catch((err) => setError(err.message))
-        .finally(() => setLoading(false))
-    }
+    api.get('/applications', { params: { email: e } })
+      .then((res) => {
+        const data = res.data
+        setApplications(Array.isArray(data) ? data : data.applications || [])
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
   }, [e])
 
   return { applications, loading, error }
@@ -149,18 +133,46 @@ export function useApplication(id: string | undefined) {
   useEffect(() => {
     if (!id) { setLoading(false); return }
     setLoading(true)
-    if (USE_JSON_DATA) {
-      getApplicationFromJson(id)
-        .then(setApplication)
-        .catch((err) => setError(err.message))
-        .finally(() => setLoading(false))
-    } else {
-      api.get(`/applications/${id}`, { params: { email } })
-        .then((res) => setApplication(res.data))
-        .catch((err) => setError(err.message))
-        .finally(() => setLoading(false))
-    }
+    api.get(`/applications/${id}`, { params: { email } })
+      .then((res) => setApplication(res.data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
   }, [id, email])
+
+  return { application, loading, error }
+}
+
+export function useAdminApplications(params?: Record<string, string>) {
+  const [data, setData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const fetch = useCallback(() => {
+    setLoading(true)
+    getAdminApplications(params)
+      .then(setData)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [JSON.stringify(params)])
+
+  useEffect(() => { fetch() }, [fetch])
+
+  return { data, loading, error, refetch: fetch }
+}
+
+export function useAdminApplication(id: string | undefined) {
+  const [application, setApplication] = useState<any | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!id) { setLoading(false); return }
+    setLoading(true)
+    getAdminApplication(id)
+      .then(setApplication)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
+  }, [id])
 
   return { application, loading, error }
 }
@@ -196,45 +208,39 @@ export function useDashboardData(email?: string) {
     setLoading(true)
     lastFetch.current = Date.now()
     try {
-      if (USE_JSON_DATA) {
-        const dashData = await getDashboardDataFromJson(e)
-        setData(dashData)
-        setProfileData(dashData.user)
-      } else {
-        const [appsRes, profileRes, jobsRes, savedJobsRes] = await Promise.all([
-          api.get('/applications', { params: { email: e } }).catch(() => ({ data: [] })),
-          api.get('/users/profile', { params: { email: e } }).catch(() => ({ data: null })),
-          api.get('/jobs', { params: { limit: '6' } }).catch(() => ({ data: { jobs: [] } })),
-          fetchSavedJobs(e).catch(() => []),
-        ])
+      const [appsRes, profileRes, jobsRes, savedJobsRes] = await Promise.all([
+        api.get('/applications', { params: { email: e } }).catch(() => ({ data: [] })),
+        api.get('/users/profile', { params: { email: e } }).catch(() => ({ data: null })),
+        api.get('/jobs', { params: { limit: '6' } }).catch(() => ({ data: { jobs: [] } })),
+        fetchSavedJobs(e).catch(() => []),
+      ])
 
-        const apps = Array.isArray(appsRes.data) ? appsRes.data : appsRes.data?.applications || []
-        const profile = profileRes.data
-        const jobsData = jobsRes.data?.jobs || []
-        const savedJobsData = Array.isArray(savedJobsRes) ? savedJobsRes : []
+      const apps = Array.isArray(appsRes.data) ? appsRes.data : appsRes.data?.applications || []
+      const profile = profileRes.data
+      const jobsData = jobsRes.data?.jobs || []
+      const savedJobsData = Array.isArray(savedJobsRes) ? savedJobsRes : []
 
-        if (profile) setProfileData(profile)
+      if (profile) setProfileData(profile)
 
-        const profileCompletion = isProfileComplete(profile, profile)
-        const profileProgress = calcProfileProgress(profileCompletion)
+      const profileCompletion = isProfileComplete(profile, profile)
+      const profileProgress = calcProfileProgress(profileCompletion)
 
-        const interviewApps = apps.filter((a: any) => a.status === 'INTERVIEW' || a.status === 'interview')
+      const interviewApps = apps.filter((a: any) => a.status === 'INTERVIEW' || a.status === 'interview')
 
-        setData({
-          user: profile,
-          stats: {
-            totalApplications: apps.length,
-            savedJobsCount: savedJobsData.length,
-            profileViews: profile?.viewsCount ?? 0,
-            interviewRequests: interviewApps.length,
-          },
-          recentApplications: apps.slice(0, 5),
-          currentJobs: jobsData,
-          savedJobs: savedJobsData,
-          profileCompletion,
-          profileProgress,
-        })
-      }
+      setData({
+        user: profile,
+        stats: {
+          totalApplications: apps.length,
+          savedJobsCount: savedJobsData.length,
+          profileViews: profile?.viewsCount ?? 0,
+          interviewRequests: interviewApps.length,
+        },
+        recentApplications: apps.slice(0, 5),
+        currentJobs: jobsData,
+        savedJobs: savedJobsData,
+        profileCompletion,
+        profileProgress,
+      })
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -324,9 +330,6 @@ export function useApplyToJob() {
   const apply = async (slug: string, data: { coverLetter?: string; resumeUrl?: string; email?: string }) => {
     setApplying(true)
     try {
-      if (USE_JSON_DATA) {
-        return await submitApplicationToJson(slug, data)
-      }
       const res = await api.post(`/jobs/${slug}/apply`, data)
       return res.data
     } finally {
@@ -347,41 +350,23 @@ export function useSavedJobs(email?: string) {
   useEffect(() => {
     if (!e) { setLoading(false); return }
     setLoading(true)
-    if (USE_JSON_DATA) {
-      getSavedJobsFromJson(e)
-        .then(setSavedJobs)
-        .catch((err) => setError(err.message || 'Failed to load saved jobs'))
-        .finally(() => setLoading(false))
-    } else {
-      fetchSavedJobs(e)
-        .then(setSavedJobs)
-        .catch((err) => setError(err?.response?.data?.error || 'Failed to load saved jobs'))
-        .finally(() => setLoading(false))
-    }
+    fetchSavedJobs(e)
+      .then(setSavedJobs)
+      .catch((err) => setError(err?.response?.data?.error || 'Failed to load saved jobs'))
+      .finally(() => setLoading(false))
   }, [e])
 
   const toggleSave = async (jobId: number) => {
     if (!e) return
     const existing = savedJobs.find(sj => sj.jobId === jobId)
     try {
-      if (USE_JSON_DATA) {
-        if (existing) {
-          await unsaveJobInJson(e, jobId)
-          setSavedJobs(prev => prev.filter(sj => sj.jobId !== jobId))
-        } else {
-          await saveJobInJson(e, jobId)
-          const newSaved = await getSavedJobsFromJson(e)
-          setSavedJobs(newSaved)
-        }
+      if (existing) {
+        await unsaveJob(jobId, e ?? undefined)
+        setSavedJobs(prev => prev.filter(sj => sj.jobId !== jobId))
       } else {
-        if (existing) {
-          await unsaveJob(jobId, e ?? undefined)
-          setSavedJobs(prev => prev.filter(sj => sj.jobId !== jobId))
-        } else {
-          await saveJob(jobId, e ?? undefined)
-          const newSaved = await fetchSavedJobs(e ?? undefined)
-          setSavedJobs(newSaved)
-        }
+        await saveJob(jobId, e ?? undefined)
+        const newSaved = await fetchSavedJobs(e ?? undefined)
+        setSavedJobs(newSaved)
       }
     } catch { /* silent */ }
   }
@@ -446,7 +431,7 @@ export function useCompanyProfile(email?: string) {
     if (!e) { setLoading(false); return }
     setLoading(true)
     try {
-      const data = USE_JSON_DATA ? await getCompanyProfileFromJson(e) : await getCompanyProfile(e)
+      const data = await getCompanyProfile(e)
       setProfile(data)
     } catch (err: any) {
       setError(err.message)
@@ -482,7 +467,7 @@ export function useCompanyJobs(email?: string) {
     if (!e) { setLoading(false); return }
     setLoading(true)
     try {
-      const data = USE_JSON_DATA ? await getCompanyJobsFromJson(e) : await getCompanyJobs(e)
+      const data = await getCompanyJobs(e)
       setJobs(Array.isArray(data) ? data : [])
     } catch (err: any) {
       setError(err.message)
@@ -508,15 +493,9 @@ export function useCandidates(slug: string | undefined) {
     if (!slug) { setLoading(false); return }
     setLoading(true)
     try {
-      if (USE_JSON_DATA) {
-        const data = await getCandidatesFromJson(slug)
-        setCandidates(data.candidates || [])
-        setJobTitle(data.job?.title || '')
-      } else {
-        const data = await getJobCandidates(slug)
-        setCandidates(data.candidates || [])
-        setJobTitle(data.job?.title || '')
-      }
+      const data = await getJobCandidates(slug)
+      setCandidates(data.candidates || [])
+      setJobTitle(data.job?.title || '')
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -539,7 +518,7 @@ export function useJobMetrics(slug: string | undefined) {
   useEffect(() => {
     if (!slug) { setLoading(false); return }
     setLoading(true);
-    (USE_JSON_DATA ? getJobMetricsFromJson(slug) : getJobMetrics(slug))
+    getJobMetrics(slug)
       .then(setMetrics)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))

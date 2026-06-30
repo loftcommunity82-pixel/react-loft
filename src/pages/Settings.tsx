@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { useAuth } from '@/providers/AuthProvider'
 import { useProfile } from '@/lib/api-hooks'
 import api from '@/lib/api'
+import { uploadProfileImage } from '@/lib/uploadcare'
 import { toast } from 'sonner'
 
 export default function Settings() {
@@ -27,20 +28,17 @@ export default function Settings() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = async () => {
-      try {
-        await api.patch('/users/profile', {
-          email: user?.email,
-          profileImage: reader.result as string,
-        })
-        setProfile((p: any) => ({ ...p, profileImage: reader.result }))
-        toast.success('Profile picture updated')
-      } catch {
-        toast.error('Failed to upload image')
-      }
+    try {
+      const cdnUrl = await uploadProfileImage(file)
+      await api.patch('/users/profile', {
+        email: user?.email,
+        profileImage: cdnUrl,
+      })
+      setProfile((p: any) => ({ ...p, profileImage: cdnUrl }))
+      toast.success('Profile picture updated')
+    } catch {
+      toast.error('Failed to upload image')
     }
-    reader.readAsDataURL(file)
   }
 
   async function handleRemoveImage() {

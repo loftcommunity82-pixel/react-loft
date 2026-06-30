@@ -60,6 +60,7 @@ export function normalizeJob(raw: any) {
     source: raw.source || 'local',
     company: raw.company || raw.employer || null,
     skills: raw.skills || raw.requiredSkills || [],
+    benefits: Array.isArray(raw.benefits) ? raw.benefits.join('\n') : (raw.benefits || null),
   }
 }
 

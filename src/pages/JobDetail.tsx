@@ -33,7 +33,7 @@ export default function JobDetail() {
       toast.success('Application submitted!')
       setShowApply(false)
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to apply')
+      toast.error(err.response?.data?.error || err.response?.data?.message || 'Failed to apply')
     }
   }
 
@@ -135,6 +135,20 @@ export default function JobDetail() {
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-white mb-3">Requirements</h3>
                   <p className="text-neutral-300 leading-relaxed whitespace-pre-line">{job.requirements}</p>
+                </div>
+              )}
+
+              {job.benefits && (
+                <div className="mb-6">
+                  <h3 className="text-lg font-semibold text-white mb-3">Benefits</h3>
+                  <ul className="space-y-2">
+                    {job.benefits.split('\n').filter(Boolean).map((benefit, index) => (
+                      <li key={index} className="flex items-start text-neutral-300">
+                        <span className="text-emerald-400 mr-2 mt-1">•</span>
+                        {benefit}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 

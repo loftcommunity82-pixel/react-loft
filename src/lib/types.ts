@@ -241,12 +241,14 @@ export interface TimelineEntry {
 export interface Candidate {
   id: number
   status: string
+  coverLetter?: string | null
   appliedAt: string
   matchScore: number
   matchedSkills: number
   totalRequired: number
   candidate: {
     id: number
+    clerkId: string
     name: string
     firstName: string
     lastName: string

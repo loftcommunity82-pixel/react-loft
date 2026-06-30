@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageSquare, Search, Send, ChevronLeft, Loader2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,19 +8,84 @@ import { useAuth } from '@/providers/AuthProvider'
 import { useConversations } from '@/lib/api-hooks'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { formatRelativeTime } from '@/lib/mappers'
-import type { Conversation } from '@/lib/types'
+import type { Conversation, Message } from '@/lib/types'
 import api from '@/lib/api'
 import { toast } from 'sonner'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import { onSSE, disconnectSSE } from '@/lib/sse'
 
 export default function MessagesPage() {
   const { user } = useAuth()
   const reduced = useReducedMotion()
-  const { conversations, loading, error } = useConversations(user?.email)
+  const { conversations, loading, error, refresh } = useConversations(user?.email)
+  const [searchParams] = useSearchParams()
+  const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [activeConv, setActiveConv] = useState<Conversation | null>(null)
   const [text, setText] = useState('')
   const [sending, setSending] = useState(false)
   const [showList, setShowList] = useState(true)
+  const [queryProcessed, setQueryProcessed] = useState(false)
+  const activeConvRef = useRef(activeConv)
+  activeConvRef.current = activeConv
+
+  const queryParticipantId = searchParams.get('participantId')
+  const queryParticipantName = searchParams.get('participantName')
+
+  useEffect(() => {
+    if (queryProcessed || loading || !queryParticipantId) return
+    const existing = conversations.find(c => c.participantId === queryParticipantId)
+    if (existing) {
+      setActiveConv(existing)
+    } else {
+      setActiveConv({
+        id: queryParticipantId,
+        participantId: queryParticipantId,
+        participantName: queryParticipantName || 'Candidate',
+        participantEmail: '',
+        participantImage: null,
+        lastMessage: '',
+        lastMessageAt: '',
+        unread: false,
+        messages: [],
+      })
+    }
+    setShowList(false)
+    setQueryProcessed(true)
+    navigate('/messages', { replace: true })
+  }, [loading, queryParticipantId, queryParticipantName, conversations, queryProcessed, navigate])
+
+  useEffect(() => {
+    return disconnectSSE
+  }, [])
+
+  useEffect(() => {
+    if (!user?.clerkId) return
+    const cleanup = onSSE('new_message', (msg: any) => {
+      const otherId = msg.senderId === user.clerkId ? msg.receiverId : msg.senderId
+      if (activeConvRef.current?.participantId === otherId) {
+        const newMsg: Message = {
+          id: msg.id,
+          content: msg.content,
+          jobId: msg.jobId ?? null,
+          readAt: null,
+          createdAt: msg.createdAt,
+          isOwn: msg.senderId === user.clerkId,
+          sender: msg.sender,
+          receiver: msg.receiver,
+        }
+        setActiveConv(prev => prev ? {
+          ...prev,
+          messages: [...prev.messages, newMsg],
+          lastMessage: msg.content,
+          lastMessageAt: msg.createdAt,
+        } : prev)
+      } else {
+        refresh()
+      }
+    })
+    return cleanup
+  }, [user?.clerkId, refresh])
 
   const filtered = conversations.filter((c) =>
     c.participantName.toLowerCase().includes(search.toLowerCase())
@@ -36,7 +101,6 @@ export default function MessagesPage() {
         content: text.trim(),
       })
       setText('')
-      toast.success('Message sent')
     } catch (err: any) {
       toast.error(err.response?.data?.message || 'Failed to send')
     } finally {

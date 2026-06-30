@@ -13,7 +13,10 @@ import {
   Trash2,
   Loader2,
 } from 'lucide-react'
+import { UploadButton } from '@uploadthing/react'
+import type { OurFileRouter } from '@/lib/uploadthing'
 import type { Job } from '@/lib/types'
+import { toast } from 'sonner'
 
 interface ApplyJobModalProps {
   isOpen: boolean
@@ -28,7 +31,6 @@ export default function ApplyJobModal({ isOpen, onClose, job, onSubmit, isSubmit
   const [coverLetter, setCoverLetter] = useState('')
   const [resumeUrl, setResumeUrl] = useState('')
   const [resumeFileName, setResumeFileName] = useState('')
-  const [uploadingResume, setUploadingResume] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
   const handleApplyClick = () => setShowApplicationForm(true)
@@ -55,19 +57,7 @@ export default function ApplyJobModal({ isOpen, onClose, job, onSubmit, isSubmit
     onClose()
   }
 
-  const handleResumeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (file.type !== 'application/pdf') return
-    setUploadingResume(true)
-    const reader = new FileReader()
-    reader.onload = () => {
-      setResumeUrl(reader.result as string)
-      setResumeFileName(file.name)
-      setUploadingResume(false)
-    }
-    reader.readAsDataURL(file)
-  }
+
 
   if (!isOpen) return null
 
@@ -156,6 +146,20 @@ export default function ApplyJobModal({ isOpen, onClose, job, onSubmit, isSubmit
               </div>
             )}
 
+            {job?.benefits && !showApplicationForm && (
+              <div className="mb-6">
+                <h3 className="text-lg font-bold text-white mb-3">Benefits</h3>
+                <ul className="space-y-2">
+                  {job.benefits.split('\n').filter(Boolean).map((benefit, index) => (
+                    <li key={index} className="flex items-start text-neutral-300">
+                      <span className="text-emerald-400 mr-2 mt-1">•</span>
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {showApplicationForm ? (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -191,20 +195,32 @@ export default function ApplyJobModal({ isOpen, onClose, job, onSubmit, isSubmit
                       </div>
                     ) : (
                       <div className="bg-neutral-800 border border-dashed border-neutral-700 rounded-lg p-4">
-                        <label className="cursor-pointer flex flex-col items-center gap-2">
-                          <Upload className="w-6 h-6 text-neutral-400" />
-                          <span className="text-sm text-neutral-400">
-                            {uploadingResume ? 'Uploading...' : 'Choose Resume PDF'}
-                          </span>
-                          <span className="text-xs text-neutral-500">PDF up to 8MB</span>
-                          <input
-                            type="file"
-                            accept=".pdf"
-                            className="hidden"
-                            onChange={handleResumeUpload}
-                            disabled={uploadingResume}
-                          />
-                        </label>
+                        <UploadButton<OurFileRouter, "resumeUploader">
+                          endpoint="resumeUploader"
+                          onClientUploadComplete={(res) => {
+                            if ((res as any)?.[0]) {
+                              setResumeUrl((res as any)[0].url)
+                              setResumeFileName((res as any)[0].name || 'Resume.pdf')
+                            }
+                          }}
+                          onUploadError={(err) => { toast.error(typeof err === 'string' ? err : err.message) }}
+                          appearance={{
+                            container: { width: '100%' },
+                            button: {
+                              background: 'transparent',
+                              border: 'none',
+                              padding: '1rem',
+                              color: '#a3a3a3',
+                              fontSize: '0.875rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              alignItems: 'center',
+                              gap: '0.5rem',
+                            },
+                            allowedContent: { display: 'none' },
+                          }}
+                        />
                       </div>
                     )}
                   </div>
@@ -238,7 +254,7 @@ export default function ApplyJobModal({ isOpen, onClose, job, onSubmit, isSubmit
                     </Button>
                     <Button
                       type="submit"
-                      disabled={submitting || isSubmitting || uploadingResume}
+                      disabled={submitting || isSubmitting}
                       className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {submitting || isSubmitting ? (

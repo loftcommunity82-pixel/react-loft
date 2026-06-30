@@ -36,6 +36,8 @@ import Guide from './pages/Guide'
 import Admin from './pages/Admin'
 import AdminSettings from './pages/AdminSettings'
 import AdminEmployers from './pages/AdminEmployers'
+import AdminApplications from './pages/AdminApplications'
+import AdminApplicationDetail from './pages/AdminApplicationDetail'
 import EditJob from './pages/EditJob'
 import ErrorPage from './pages/ErrorPage'
 
@@ -80,6 +82,8 @@ export default function App() {
             <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
             <Route path="/admin/employers" element={<ProtectedRoute><AdminEmployers /></ProtectedRoute>} />
+            <Route path="/admin/applications" element={<ProtectedRoute><AdminApplications /></ProtectedRoute>} />
+            <Route path="/admin/applications/:id" element={<ProtectedRoute><AdminApplicationDetail /></ProtectedRoute>} />
             <Route path="/error" element={<ErrorPage />} />
           </Route>
 

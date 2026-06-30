@@ -106,6 +106,22 @@ export async function applyToJob(slug: string, body: { coverLetter?: string; res
   return data
 }
 
+export async function getAdminApplications(params?: Record<string, string>): Promise<{
+  applications: any[]
+  stats: Record<string, number>
+  page: number
+  totalPages: number
+  limit: number
+}> {
+  const { data } = await api.get("/admin/applications", { params })
+  return data
+}
+
+export async function getAdminApplication(id: number | string): Promise<any> {
+  const { data } = await api.get(`/admin/applications/${id}`)
+  return data
+}
+
 export async function getJobCandidates(slug: string, sort?: string): Promise<{ job: any; candidates: Candidate[]; total: number }> {
   const params: Record<string, string> = {}
   if (sort) params.sort = sort

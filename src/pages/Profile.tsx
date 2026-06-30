@@ -12,6 +12,7 @@ import { useAuth } from '@/providers/AuthProvider'
 import { useProfile } from '@/lib/api-hooks'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import api from '@/lib/api'
+import { uploadProfileImage } from '@/lib/uploadcare'
 import { toast } from 'sonner'
 
 interface QuizQuestion {
@@ -81,24 +82,27 @@ export default function Profile() {
   async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = async () => {
-      try {
-        await api.patch('/users/profile', {
-          email: user?.email,
-          profileImage: reader.result as string,
-        })
-        setProfile((p: any) => ({ ...p, profileImage: reader.result }))
-        toast.success('Photo updated')
-      } catch {
-        toast.error('Failed to upload')
-      }
+    try {
+      const cdnUrl = await uploadProfileImage(file)
+      await api.patch('/users/profile', {
+        email: user?.email,
+        profileImage: cdnUrl,
+      })
+      setProfile((p: any) => ({ ...p, profileImage: cdnUrl }))
+      toast.success('Photo updated')
+    } catch {
+      toast.error('Failed to upload')
     }
-    reader.readAsDataURL(file)
   }
 
-  function handleRemoveImage() {
-    setProfile((p: any) => ({ ...p, profileImage: null }))
+  async function handleRemoveImage() {
+    try {
+      await api.patch('/users/profile', { email: user?.email, profileImage: null })
+      setProfile((p: any) => ({ ...p, profileImage: null }))
+      toast.success('Photo removed')
+    } catch {
+      toast.error('Failed to remove photo')
+    }
   }
 
   function startQuiz() {

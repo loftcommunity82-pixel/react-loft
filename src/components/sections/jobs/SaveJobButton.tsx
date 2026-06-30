@@ -3,8 +3,6 @@ import { Bookmark, Loader2 } from 'lucide-react'
 import { useAuth } from '@/providers/AuthProvider'
 import { Link } from 'react-router-dom'
 import api from '@/lib/api'
-import { USE_JSON_DATA } from '@/lib/config'
-import { saveJobInJson, unsaveJobInJson } from '@/lib/json-service'
 
 interface SaveJobButtonProps {
   jobId: number
@@ -35,22 +33,12 @@ export default function SaveJobButton({ jobId, initiallySaved = false, className
     e.stopPropagation()
     setLoading(true)
     try {
-      if (USE_JSON_DATA) {
-        if (saved) {
-          await unsaveJobInJson(user.email, jobId)
-          setSaved(false)
-        } else {
-          await saveJobInJson(user.email, jobId)
-          setSaved(true)
-        }
+      if (saved) {
+        await api.delete('/users/saved-jobs', { params: { jobId: String(jobId) } })
+        setSaved(false)
       } else {
-        if (saved) {
-          await api.delete('/users/saved-jobs', { params: { jobId: String(jobId) } })
-          setSaved(false)
-        } else {
-          await api.post('/users/saved-jobs', { jobId })
-          setSaved(true)
-        }
+        await api.post('/users/saved-jobs', { jobId })
+        setSaved(true)
       }
     } catch { /* silent */ } finally {
       setLoading(false)

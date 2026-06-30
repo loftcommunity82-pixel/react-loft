@@ -1,7 +1,18 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Users, Briefcase, Building, BarChart3, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Users, Briefcase, Building, Loader2, FileText, ExternalLink } from 'lucide-react'
+
+const appStatusConfig = [
+  { label: 'Pending', key: 'pendingApps', color: 'text-yellow-400' },
+  { label: 'Reviewing', key: 'reviewingApps', color: 'text-blue-400' },
+  { label: 'Shortlisted', key: 'shortlistedApps', color: 'text-purple-400' },
+  { label: 'Interview', key: 'interviewApps', color: 'text-indigo-400' },
+  { label: 'Offered', key: 'offeredApps', color: 'text-emerald-400' },
+  { label: 'Rejected', key: 'rejectedApps', color: 'text-red-400' },
+]
 
 export default function Admin() {
   const [analytics, setAnalytics] = useState<any>(null)
@@ -32,7 +43,7 @@ export default function Admin() {
     { label: 'Job Seekers', value: analytics?.totalSeekers ?? 0, icon: Users },
     { label: 'Employers', value: analytics?.totalEmployers ?? 0, icon: Building },
     { label: 'Active Jobs', value: analytics?.activeJobs ?? 0, icon: Briefcase },
-    { label: 'Total Applications', value: analytics?.totalApplications ?? 0, icon: BarChart3 },
+    { label: 'Total Applications', value: analytics?.totalApplications ?? 0, icon: FileText },
     { label: 'Hired This Month', value: analytics?.hiredThisMonth ?? 0, icon: Users },
     { label: 'Pending Jobs', value: analytics?.pendingJobs ?? 0, icon: Briefcase },
   ]
@@ -46,6 +57,7 @@ export default function Admin() {
             <p className="text-muted-foreground mt-1">Platform overview and analytics</p>
           </div>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
           {stats.map((stat) => (
             <Card key={stat.label} className="bg-card border">
@@ -61,6 +73,34 @@ export default function Admin() {
             </Card>
           ))}
         </div>
+
+        <Card className="bg-card border mb-8">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle className="text-foreground">Applications Overview</CardTitle>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {analytics?.applicationsThisWeek ?? 0} new this week
+                {analytics?.applicationsThisWeek > 0 && <span className="text-emerald-400 ml-1">&uarr;</span>}
+              </p>
+            </div>
+            <Link to="/admin/applications">
+              <Button variant="outline" size="sm">
+                View All <ExternalLink className="w-3 h-3 ml-1" />
+              </Button>
+            </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+              {appStatusConfig.map((stat) => (
+                <div key={stat.key} className="text-center p-3 rounded-lg bg-muted/20">
+                  <p className={`text-lg font-bold ${stat.color}`}>{analytics?.[stat.key] ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
         <Card className="bg-card border">
           <CardHeader><CardTitle className="text-foreground">Recent Employer Members</CardTitle></CardHeader>
           <CardContent>

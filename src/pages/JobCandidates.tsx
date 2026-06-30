@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
-import { ArrowLeft, Users, Mail, Star, Loader2, AlertCircle } from 'lucide-react'
+import { ArrowLeft, Users, MessageSquare, Star, Loader2, AlertCircle } from 'lucide-react'
 import { useCandidates } from '@/lib/api-hooks'
 
 const statusColors: Record<string, string> = {
@@ -116,15 +116,26 @@ export default function CandidatesPage() {
                           ))}
                         </div>
                       )}
+
+                      {candidate.coverLetter && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <p className="text-xs text-muted-foreground mb-1">Cover Letter</p>
+                          <p className="text-sm text-foreground/80 line-clamp-3">{candidate.coverLetter}</p>
+                        </div>
+                      )}
                     </div>
 
                     <div className="flex gap-2 ml-4">
-                      <a href={`mailto:${candidate.candidate.email}`}>
+                      <Link
+                        to={`/messages?participantId=${candidate.candidate.clerkId}&participantName=${encodeURIComponent((candidate.candidate.firstName + ' ' + candidate.candidate.lastName).trim() || 'Candidate')}`}
+                      >
                         <Button variant="outline" size="sm" className="border">
-                          <Mail className="w-4 h-4" />
+                          <MessageSquare className="w-4 h-4" />
                         </Button>
-                      </a>
-                      <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">Review</Button>
+                      </Link>
+                      <Link to="/hiring-workflow">
+                        <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">Review</Button>
+                      </Link>
                     </div>
                   </div>
                 </CardContent>
