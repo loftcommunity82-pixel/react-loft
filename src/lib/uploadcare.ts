@@ -1,11 +1,8 @@
-import { uploadFile } from '@uploadcare/upload-client'
-
-const UPLOADCARE_PUBKEY = 'fa9cfa5735e579dbea9b'
-
 export async function uploadProfileImage(file: File): Promise<string> {
-  const result = await uploadFile(file, {
-    publicKey: UPLOADCARE_PUBKEY,
-    store: 'auto',
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(new Error('Failed to read file'))
+    reader.readAsDataURL(file)
   })
-  return result.cdnUrl || ''
 }
