@@ -136,6 +136,23 @@ export default function MessagesPage() {
   function selectConversation(conv: Conversation) {
     setActiveConv(conv)
     setShowList(false)
+
+    const unreadIds = conv.messages
+      .filter(m => !m.isOwn && m.readAt === null)
+      .map(m => m.id)
+
+    if (unreadIds.length > 0) {
+      const now = new Date().toISOString()
+      unreadIds.forEach(id => {
+        api.post(`/messages/${id}/read`).catch(() => {})
+      })
+      setActiveConv(prev => prev ? {
+        ...prev,
+        messages: prev.messages.map(m =>
+          unreadIds.includes(m.id) ? { ...m, readAt: now } : m
+        ),
+      } : prev)
+    }
   }
 
   if (error) {
