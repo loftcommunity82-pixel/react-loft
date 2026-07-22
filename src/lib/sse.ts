@@ -13,11 +13,12 @@ function ensureConnected() {
 }
 
 export function onSSE(event: string, handler: (data: any) => void) {
-  ensureConnected()
   if (!listeners.has(event)) listeners.set(event, new Set())
   listeners.get(event)!.add(handler)
   if (es) {
     es.addEventListener(event, (e: MessageEvent) => handler(JSON.parse(e.data)))
+  } else {
+    ensureConnected()
   }
   return () => {
     listeners.get(event)?.delete(handler)
@@ -27,5 +28,4 @@ export function onSSE(event: string, handler: (data: any) => void) {
 export function disconnectSSE() {
   es?.close()
   es = null
-  listeners.clear()
 }
