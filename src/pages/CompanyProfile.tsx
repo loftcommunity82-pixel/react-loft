@@ -18,7 +18,7 @@ export default function CompanyProfilePage() {
   const [form, setForm] = useState({
     companyName: '',
     companyWebsite: '',
-    companySize: '',
+    size: '',
     industry: '',
     description: '',
     contactEmail: '',
@@ -37,7 +37,7 @@ export default function CompanyProfilePage() {
       setForm({
         companyName: profile.companyName || '',
         companyWebsite: profile.companyWebsite || '',
-        companySize: profile.companySize || '',
+        size: profile.companySize || '',
         industry: profile.industry || '',
         description: profile.description || '',
         contactEmail: profile.contactEmail || '',
@@ -111,7 +111,7 @@ export default function CompanyProfilePage() {
                 </div>
                 <div className="space-y-2">
                   <Label className="text-foreground/80">Company Size</Label>
-                  <select value={form.companySize} onChange={e => setForm(f => ({ ...f, companySize: e.target.value }))} className="w-full bg-muted border border text-foreground rounded-md px-3 py-2">
+                  <select value={form.size} onChange={e => setForm(f => ({ ...f, size: e.target.value }))} className="w-full bg-muted border border text-foreground rounded-md px-3 py-2">
                     <option value="">Select size</option>
                     <option value="STARTUP">Startup (1-10)</option>
                     <option value="SMALL">Small (11-50)</option>
