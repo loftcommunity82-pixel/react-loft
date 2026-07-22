@@ -208,11 +208,13 @@ export function useDashboardData(email?: string) {
     setLoading(true)
     lastFetch.current = Date.now()
     try {
-      const [appsRes, profileRes, jobsRes, savedJobsRes] = await Promise.all([
+      const [appsRes, profileRes, jobsRes, savedJobsRes, messagesRes, myJobsRes] = await Promise.all([
         api.get('/applications', { params: { email: e } }).catch(() => ({ data: [] })),
         api.get('/users/profile', { params: { email: e } }).catch(() => ({ data: null })),
         api.get('/jobs', { params: { limit: '6' } }).catch(() => ({ data: { jobs: [] } })),
         fetchSavedJobs(e).catch(() => []),
+        api.get('/messages', { params: { email: e } }).catch(() => ({ data: [] })),
+        api.get('/companies/jobs', { params: { email: e } }).catch(() => ({ data: [] })),
       ])
 
       const apps = Array.isArray(appsRes.data) ? appsRes.data : appsRes.data?.applications || []
@@ -227,6 +229,16 @@ export function useDashboardData(email?: string) {
 
       const interviewApps = apps.filter((a: any) => a.status === 'INTERVIEW' || a.status === 'interview')
 
+      const messagesData = Array.isArray(messagesRes.data) ? messagesRes.data : messagesRes.data?.messages || []
+      const myJobsData = Array.isArray(myJobsRes.data) ? myJobsRes.data : myJobsRes.data?.jobs || []
+
+      const conversationPartners = new Set<string>()
+      const myEmail = e
+      for (const msg of messagesData) {
+        const other = msg.sender?.email === myEmail ? msg.receiver?.clerkId : msg.sender?.clerkId
+        if (other) conversationPartners.add(other)
+      }
+
       setData({
         user: profile,
         stats: {
@@ -234,6 +246,8 @@ export function useDashboardData(email?: string) {
           savedJobsCount: savedJobsData.length,
           profileViews: profile?.viewsCount ?? 0,
           interviewRequests: interviewApps.length,
+          activeJobs: myJobsData.length,
+          messages: conversationPartners.size,
         },
         recentApplications: apps.slice(0, 5),
         currentJobs: jobsData,

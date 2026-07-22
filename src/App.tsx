@@ -1,5 +1,6 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
 import ScrollToTop from '@/components/ScrollToTop'
+import VisitorCounter from '@/components/VisitorCounter'
 import { AnimatePresence } from 'framer-motion'
 import { Toaster } from 'sonner'
 import { AuthProvider } from '@/providers/AuthProvider'
@@ -47,6 +48,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <VisitorCounter />
       <ScrollToTop />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
