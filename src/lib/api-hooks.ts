@@ -27,6 +27,7 @@ import {
 } from './json-service'
 import type { Job, Application, Message, Conversation, SavedJob, CompanyProfile, Notification, NotificationPrefs, JobMetrics, Candidate, Skill } from './types'
 import { normalizeJob } from './mappers'
+import { toast } from 'sonner'
 
 export function useJobs(params?: Record<string, string>) {
   const [jobs, setJobs] = useState<Job[]>([])
@@ -382,7 +383,9 @@ export function useSavedJobs(email?: string) {
         const newSaved = await fetchSavedJobs(e ?? undefined)
         setSavedJobs(newSaved)
       }
-    } catch { /* silent */ }
+    } catch {
+      toast.error(existing ? 'Failed to unsave job' : 'Failed to save job')
+    }
   }
 
   const isSaved = (jobId: number) => savedJobs.some(sj => sj.jobId === jobId)
