@@ -23,6 +23,7 @@ import Notifications from './pages/Notifications'
 import Onboarding from './pages/Onboarding'
 import Blocked from './pages/Blocked'
 import ForgotPassword from './pages/ForgotPassword'
+import VerifyEmail from './pages/VerifyEmail'
 import SavedJobs from './pages/SavedJobs'
 import FAQ from './pages/FAQ'
 import Privacy from './pages/Privacy'
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/jobs" element={<BrowseJobs />} />
