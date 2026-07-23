@@ -57,8 +57,13 @@ export async function resetPassword(email: string): Promise<{ success: boolean; 
   return data
 }
 
+export async function updatePassword(token: string, newPassword: string, confirmPassword: string): Promise<{ success: boolean; message: string }> {
+  const { data } = await api.post('/auth/update-password', { token, newPassword, confirmPassword })
+  return data
+}
+
 export async function verifyEmail(token: string): Promise<{ success: boolean; message: string }> {
-  const { data } = await api.post('/auth/verify-email', { token })
+  const { data } = await api.get('/auth/verify-email', { params: { token } })
   return data
 }
 

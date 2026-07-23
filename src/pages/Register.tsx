@@ -17,10 +17,16 @@ import { useAuth } from '@/providers/AuthProvider'
 import { toast } from 'sonner'
 
 const registerSchema = z.object({
-  firstName: z.string().min(2, 'First name is required'),
-  lastName: z.string().min(2, 'Last name is required'),
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(/[A-Z]/, 'Password must contain an uppercase letter')
+    .regex(/[a-z]/, 'Password must contain a lowercase letter')
+    .regex(/[0-9]/, 'Password must contain a number')
+    .regex(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain a special character (!@#$%^&*)'),
   confirmPassword: z.string(),
   role: z.enum(['job_seeker', 'employer']),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -42,11 +48,14 @@ export default function Register() {
     register,
     handleSubmit,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: { role: 'job_seeker' },
   })
+
+  const passwordValue = watch('password', '')
 
   async function onSubmit(data: RegisterForm) {
     setIsLoading(true)
@@ -142,7 +151,7 @@ export default function Register() {
                   <Input
                     id="reg-password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="Min. 8 characters"
+                    placeholder="Min. 8 chars, upper, lower, number, special"
                     {...register('password')}
                     className={`pr-10 ${errors.password ? 'ring-2 ring-red-500' : ''}`}
                   />
@@ -156,6 +165,21 @@ export default function Register() {
                   </button>
                 </div>
                 {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
+                {passwordValue.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {[
+                      { label: '8+ characters', met: passwordValue.length >= 8 },
+                      { label: 'Uppercase letter', met: /[A-Z]/.test(passwordValue) },
+                      { label: 'Lowercase letter', met: /[a-z]/.test(passwordValue) },
+                      { label: 'Number', met: /[0-9]/.test(passwordValue) },
+                      { label: 'Special character (!@#$%^&*)', met: /[!@#$%^&*(),.?":{}|<>]/.test(passwordValue) },
+                    ].map(({ label, met }) => (
+                      <p key={label} className={`text-xs ${met ? 'text-emerald-400' : 'text-neutral-500'}`}>
+                        {met ? '✓' : '○'} {label}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">

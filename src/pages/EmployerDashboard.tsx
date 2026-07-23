@@ -27,7 +27,7 @@ export default function EmployerDashboardPage() {
   const { profile: company, loading: profileLoading } = useCompanyProfile(user?.email)
 
   useEffect(() => {
-    fetch('/api/admin/applications?limit=10')
+    fetch('/api/admin/applications?limit=10', { credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data) { setSuperApps(data); setIsSuper(true) }

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FileText, ChevronRight } from 'lucide-react'
+import { FileText, ChevronRight, AlertCircle } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import ApplicationListSkeleton from '@/components/skeletons/ApplicationListSkeleton'
 import { useApplications } from '@/lib/api-hooks'
@@ -23,7 +24,7 @@ const statusVariant: Record<string, 'default' | 'secondary' | 'destructive' | 'o
 export default function Applications() {
   const { user } = useAuth()
   const reduced = useReducedMotion()
-  const { applications, loading } = useApplications(user?.email)
+  const { applications, loading, error } = useApplications(user?.email)
 
   return (
       <div className="container px-4 md:px-6 py-16 sm:py-20 max-w-4xl mx-auto">
@@ -38,6 +39,16 @@ export default function Applications() {
 
           {loading ? (
             <ApplicationListSkeleton />
+          ) : error ? (
+            <div className="flex items-center justify-center min-h-[60vh] px-4">
+              <Card className="w-full max-w-md">
+                <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+                  <AlertCircle className="h-12 w-12 text-red-400" />
+                  <p className="text-neutral-400">{error}</p>
+                  <Button variant="outline" onClick={() => window.location.reload()}>Try Again</Button>
+                </CardContent>
+              </Card>
+            </div>
           ) : applications.length === 0 ? (
             <div className="text-center py-20">
               <img

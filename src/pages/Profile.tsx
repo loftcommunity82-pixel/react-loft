@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, BookOpen, Award, Save, Loader2, Camera, Briefcase, CheckCircle, XCircle, Trash2 } from 'lucide-react'
+import { User, BookOpen, Award, Save, Loader2, Camera, Briefcase, CheckCircle, XCircle, Trash2, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -32,7 +32,7 @@ const defaultQuestions: QuizQuestion[] = [
 export default function Profile() {
   const { user } = useAuth()
   const reduced = useReducedMotion()
-  const { profile, setProfile, loading } = useProfile(user?.email)
+  const { profile, setProfile, loading, error } = useProfile(user?.email)
 
   const [saving, setSaving] = useState(false)
   const [firstName, setFirstName] = useState('')
@@ -127,6 +127,20 @@ export default function Profile() {
   if (loading) {
     return (
         <ProfileSkeleton />
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+            <AlertCircle className="h-12 w-12 text-red-400" />
+            <p className="text-neutral-400">{error}</p>
+            <Button variant="outline" onClick={() => window.location.reload()}>Try Again</Button>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 

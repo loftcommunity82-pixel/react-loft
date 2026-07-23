@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Search, MapPin, Briefcase, ChevronDown } from 'lucide-react'
+import { Search, MapPin, Briefcase, ChevronDown, AlertCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -20,7 +20,7 @@ export default function BrowseJobs() {
   const [type, setType] = useState('')
   const [displayCount, setDisplayCount] = useState(12)
   const location = searchParams.get('location') || ''
-  const { jobs, loading } = useJobs({ search, location, jobType: type })
+  const { jobs, loading, error } = useJobs({ search, location, jobType: type })
 
   const filtered = jobs.filter((job) => {
     const q = search.toLowerCase()
@@ -37,6 +37,18 @@ export default function BrowseJobs() {
     <PageShell>
       <div className="container px-4 md:px-6 py-16 sm:py-20">
         <motion.div initial={reduced ? { opacity: 1 } : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          {error ? (
+            <div className="flex items-center justify-center min-h-[60vh] px-4">
+              <Card className="w-full max-w-md">
+                <CardContent className="flex flex-col items-center gap-4 py-12 text-center">
+                  <AlertCircle className="h-12 w-12 text-red-400" />
+                  <p className="text-neutral-400">{error}</p>
+                  <Button variant="outline" onClick={() => window.location.reload()}>Try Again</Button>
+                </CardContent>
+              </Card>
+            </div>
+          ) : (
+          <>
           <div className="text-center mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-white mb-3">Browse Jobs</h1>
             <p className="text-neutral-400 max-w-xl mx-auto">Find your next opportunity from top companies</p>
@@ -155,6 +167,8 @@ export default function BrowseJobs() {
                 </div>
               )}
             </>
+          )}
+          </>
           )}
         </motion.div>
       </div>

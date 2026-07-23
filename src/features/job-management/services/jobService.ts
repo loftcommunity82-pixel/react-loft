@@ -18,7 +18,7 @@ export async function getEmployerJobs(filters?: JobFilters): Promise<JobSummary[
   if (filters?.workMode) params.workMode = filters.workMode
   if (filters?.search) params.search = filters.search
 
-  const { data } = await api.get('/jobs/employer', { params })
+  const { data } = await api.get('/companies/jobs', { params })
   return data
 }
 
